@@ -2,21 +2,89 @@
 <html lang='en'>
 <head>
  <title>Chrome FaceDetector</title>
+ <style>
+  #currimage {
+    z-index:1;
+    position: absolute;
+  }
+
+  canvas {
+    position: relative;
+    z-index:10;
+  }
+ </style>
 </head>
 <body>
- <div>
-  <img id='img'>
- </div>
- <HR>
- <div id='images'>
- <?php
- ?>
- <div>
+  <div style='padding-bottom:100px'>
+    <img id='currimage'>
+    <canvas id='canvas'></canvas>
+  </div>
+<h4>Click an image below to detect faces</h4>
+<div id='imagehost'><div>
+
  <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
  <script>
+  var imghost;
+  var currimage;
+  var canvas;
+  var ctx;
+  var facedetector;
+  
+  let images = ["people/0e4771914_1452013661_findagroupfeatured.jpg",
+                "people/DC_2017_PLM_01_Group_0232_final_resized_cropped-original.jpg"
+               ];
+
   $(document).ready(function(){
+    imghost   = $('#imagehost');
+    currimage = $('#currimage');
+    canvas    = $('#canvas')[0];
+    ctx       = canvas.getContext('2d');
+   
+    for(var idx=0; idx < images.length; idx++){
+       var img = "<img src='" + images[idx] + "' onclick='setcurrimage(this)'>";
+       imghost.prepend(img);
+    }
+
+    document.getElementById('currimage').onload = function(){
+      console.log('onload');
+
+     try {
+       facedetector = new FaceDetector();
+     } catch (error){
+       return alert(error);
+     }
+       // clear canvas
+       ctx.clearRect(0,0,canvas.width, canvas.height);
+
+     facedetector.detect(this)
+     .then(function(faces){
+       console.log(faces.length, 'faces detected');
+       faces.forEach(function(face){
+            console.log(face);
+
+            var box = face.boundingBox;
+            ctx.beginPath();
+            ctx.lineWidth = '2';
+            ctx.strokeStyle = 'red';
+            ctx.rect(box.x, box.y, box.width, box.height)
+            ctx.stroke();
+            console.log(box);
+       });
+     })
+     .catch(function(error){
+       console.log(error);
+     })
+    }
     
   });
+  
+  function setcurrimage(elem){
+    currimage.prop('src',elem.src);
+    console.log(elem.width,'x', elem.height);
+
+    canvas.width  = elem.width;
+    canvas.height = elem.height;
+  }
  </script>
 </body>
 <html>

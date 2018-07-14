@@ -64,10 +64,14 @@
 
             var box = face.boundingBox;
             ctx.beginPath();
+            ctx.font = '11px Helvetica';
+            ctx.fillStyle = "red";
+            ctx.fillText('x: ' + Math.round(box.x,2), box.x, box.y + box.height+15);
+            ctx.fillText('y: ' + Math.round(box.y,2), box.x, box.y + box.height+25);  
             ctx.lineWidth = '2';
             ctx.strokeStyle = 'red';
-            ctx.rect(box.x, box.y, box.width, box.height)
-            ctx.stroke();
+            ctx.strokeRect(box.x, box.y, box.width, box.height)
+
             console.log(box);
        });
      })

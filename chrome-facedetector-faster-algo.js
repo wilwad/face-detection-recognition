@@ -9,6 +9,10 @@
   position: relative;
   z-index: 10;
  }
+ 
+ #canvasTemp {
+  display: none;
+ }
 </style>
 
 <div>
@@ -78,7 +82,8 @@
   // when stream is updated, copy image scaled down to canvasTempctx
   imgStream.onload = function(){
     // copy to canvasTemp
-    imgTemp.src = ctxTemp.drawImage(this, 0, 0, 320, 240).toDataUrl();
+    ctxTemp.drawImage(this, 0, 0, 320, 240);
+    imgTemp.src = ctx.toDataUrl();
   }
   
   function copy(){
